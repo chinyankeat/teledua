@@ -65,26 +65,17 @@ bot.on('conversationUpdate', function (message) {
 bot.dialog('menu', [
     function (session) {
         
-        session.send("Hello, I'm your friendly Digi beta bot and I'll be available from 9pm-12am");
-        builder.Prompts.choice(session, "To get started, these are the things I can help you with. Just click on any of the below and let's get started.", 'Prepaid|Postpaid|Broadband|Roaming|Commonly Asked Question', { listStyle:builder.ListStyle.button, maxRetries:MaxRetries, retryPrompt:DefaultErrorPrompt});
+        session.send("Hello, I am Telco 2.0 Virtual Assistant. ");
+        builder.Prompts.choice(session, "How can I help you today? ", 'Unable to Connect to Internet|Unable to Receive Call', { listStyle:builder.ListStyle.button, maxRetries:MaxRetries, retryPrompt:DefaultErrorPrompt});
     },
     function (session, results) {
         try {
             switch (results.response.index) {
                 case 0:     // Prepaid
-                    session.beginDialog('Prepaid');
+                    session.beginDialog('ConnectToInternet');
                     break;
                 case 1:     // Postpaid
-                    session.beginDialog('Postpaid');
-                    break;
-                case 2:     // Broadband
-                    session.beginDialog('Broadband');
-                    break;
-                case 3:     // Roaming
-                    session.beginDialog('Roaming');
-                    break;
-                case 4:
-                    session.beginDialog('CommonlyAskedQuestion');
+                    session.beginDialog('ReceiveCall');
                     break;
                 default:
                     break;
@@ -104,8 +95,139 @@ bot.dialog('menu', [
 });
 
 
+bot.dialog('ConnectToInternet', [
+    function (session) {        
+        builder.Prompts.choice(session, "Is your VPN switched on? You will be able to see a key icon on the top menu of the phone if you are connected to a VPN.", "Yes|No|Exit", { listStyle: builder.ListStyle.button });
+    },
+    function (session, results) {
+        switch (results.response.index) {
+        case 0: //Yes
+            session.replaceDialog('ValidDataPlan');
+            break;
+	    case 1: // No
+            session.send("Open the Dash app > Control > Turn on Data Saving Mode. Your data should be working now.");
+            builder.Prompts.choice(session, "", "Menu", { listStyle: builder.ListStyle.button });
+            break;
+        default:    // Next Page
+            session.replaceDialog('menu');
+            break;
+        }
+    },
+    function (session, results) {
+        session.replaceDialog('menu');
+    }
+]).triggerAction({
+    matches: /(Connect To Internet)/i
+});
 
+bot.dialog('ValidDataPlan', [
+    function (session) {        
+        builder.Prompts.choice(session, "Are you on a valid data plan?", "Yes|No|Exit", { listStyle: builder.ListStyle.button });
+    },
+    function (session, results) {
+        switch (results.response.index) {
+        case 0: //Yes
+            session.replaceDialog('BlockSpecificApp');
+            break;
+	    case 1: // No
+            session.send("If your plan has expired, buy a new plan. To buy a new plan, open the Dash app > Choose duration > Set Budget > Adjust voice and data according to preference > Purchase Now. Your data should be working now.");
+            session.replaceDialog('RestartMenu');
+            break;
+        default:    // Next Page
+            session.replaceDialog('menu');
+            break;
+        }
+    },
+    function (session, results) {
+        session.replaceDialog('menu');
+    }
+]).triggerAction({
+    matches: /(Valid Data Plan)/i
+});
 
+bot.dialog('BlockSpecificApp', [
+    function (session) {        
+        builder.Prompts.choice(session, "Did you block that specific app access? To check please open Dash app > control", "Yes|No|Exit", { listStyle: builder.ListStyle.button });
+    },
+    function (session, results) {
+        switch (results.response.index) {
+        case 0: //Yes
+            session.send("Please click on the app to unblock the app. Your data should be working now");
+            session.replaceDialog('RestartMenu');
+            break;
+	    case 1: // No
+            session.send("Someone from the team will call you in the next 24 hours to troubleshoot further");
+            session.replaceDialog('RestartMenu');
+            break;
+        default:    // Next Page
+            session.replaceDialog('menu');
+            break;
+        }
+    }
+]).triggerAction({
+    matches: /(Block Specific App)/i
+});
+
+bot.dialog('ReceiveCall', [
+    function (session) {        
+        builder.Prompts.choice(session, "Is your VPN switched on? You will be able to see a key icon on the top menu of the phone if you are connected to a VPN", "Yes|No|Exit", { listStyle: builder.ListStyle.button });
+    },
+    function (session, results) {
+        switch (results.response.index) {
+        case 0: //Yes
+            session.replaceDialog('CheckDialer');
+            break;
+	    case 1: // No
+            session.send("Open Dash app > Control > Turn on Data Saving Mode. Your problem should be solved now");
+            session.replaceDialog('RestartMenu');
+            break;
+        default:    // Next Page
+            session.replaceDialog('menu');
+            break;
+        }
+    },
+    function (session, results) {
+        session.replaceDialog('menu');
+    },
+]).triggerAction({
+    matches: /(Cannot Receive Calls)|(Unable to Receive Calls)|(Unable Receive Calls)/i
+});
+
+bot.dialog('CheckDialer', [
+    function (session) {        
+            session.send("Is your dialer registered/green?");
+            session.send("To check, open dialer app > click on wallet icon on top right of the app > phone icon should both be registered/green.");
+            builder.Prompts.choice(session, "", "Still Not Working|Its Working Now", { listStyle: builder.ListStyle.button });
+    },
+    function (session, results) {
+        switch (results.response.index) {
+        case 0:
+            session.send("Someone from the team will call you in the next 24 hours to troubleshoot further");
+            session.replaceDialog('RestartMenu');
+            break;
+	    case 1:
+            session.send("Great, I'm glad I can help you");
+            session.replaceDialog('RestartMenu');
+            break;
+        default:    // Next Page
+            session.replaceDialog('menu');
+            break;
+        }
+    }
+]).triggerAction({
+    matches: /(Check Dialer)/i
+});
+
+bot.dialog('RestartMenu', [
+    function (session) {        
+        builder.Prompts.choice(session, "Okay, Lets Start Again", "Menu", { listStyle: builder.ListStyle.button });
+    },
+    function (session, results) {
+        session.replaceDialog('menu');
+    }
+]).triggerAction({
+    matches: /(Cannot Receive Calls)|(Unable to Receive Calls)|(Unable Receive Calls)/i
+});
 
 
 //////////////////////////////////////////////////////////////////////////////
