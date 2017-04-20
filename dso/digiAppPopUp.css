@@ -1,0 +1,34 @@
+#digiAppBanner { position:absolute; left:0; top:-82px; border-bottom:none; width:100%; height:100px; font-family:"telenor",Helvetica Neue,sans-serif; background:#004272; background-image: none; box-shadow:none; z-index:9998; -webkit-font-smoothing:antialiased; overflow:hidden; -webkit-text-size-adjust:none; }
+#digiAppBanner, html.dp-animation {-webkit-transition: all .3s ease;}
+#digiAppBanner .dp-container { margin: 0 auto; }
+#digiAppBanner .dp-close { position:absolute; left:10px; top:45px; display:block;width:14px; height:14px;background:url(/cs/site_template/digi/images/close.png) no-repeat; text-decoration:none; text-shadow:none; border-radius:0; box-shadow:none;-webkit-font-smoothing:none;font-size:0; }
+#digiAppBanner .dp-icon { position:absolute; left:35px; top:20px; display:block; width:60px; height:60px; background:url(/cs/site_template/digi/images/digi.png) no-repeat; background-size:cover; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,0.3); }
+
+#digiAppBanner .dp-info { position:absolute; left:105px; top:19px; width:45%; font-size:11px; line-height:1.2em;  color:#fff !important; text-shadow:none; }
+
+#digiAppBanner .dp-info > span { display:block; }
+#digiAppBanner .dp-info em { font-style:normal; text-transform:uppercase; }
+#digiAppBanner .dp-button { position:absolute; right:10px; top:35px; border:1px solid #fce607; padding:5px 5px 3px; min-width: 10%;  font-size:10px; line-height:24px; text-align:center; font-weight:bold; text-transform:uppercase; text-decoration:none;  background:#fce607; background-image:none; text-transform:none; text-shadow:none; box-shadow:none;color:#004272;border-radius: 5px; }
+#digiAppBanner .dp-button:active, #digiAppBanner .dp-button:hover { background:#fce607; }
+
+#digiAppBanner .dp-icon.gloss:after { content:''; position:absolute; left:0; top:-1px; border-top:1px solid rgba(255,255,255,0.8); width:100%; height:50%; background:-webkit-linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.2) 100%); border-radius:10px 10px 12px 12px; }
+
+#digiAppBanner.android { border-color:#212228; background:#004272; box-shadow: none; }
+#digiAppBanner.android .dp-close { border:0; width:14px; height:14px;text-shadow:none; box-shadow:none;font-size:0;}
+/* #digiAppBanner.android .dp-button { min-width: 12%; border:1px solid #fff; padding:1px; background: none; border-radius: 5px; box-shadow: none; min-height:28px}
+#digiAppBanner.android .dp-button span { text-align: center; display: block; padding: 0 10px; background: #fce607; background-image:none; text-transform:none; text-shadow:none; box-shadow:none;color:#004272 }
+#digiAppBanner.android .dp-button:active, #digiAppBanner.android .dp-button:hover { background:#fce607; }
+#digiAppBanner.android .dp-button:active span, #digiAppBanner.android .dp-button:hover span { background:#fce607; } */
+
+#digiAppBanner.windows .dp-icon { border-radius: 0px; }
+#digiAppBanner .dp-info .dp-info-heading{font-size:17px;line-height:1em;font-weight:bold;color:#fff!important;}
+#digiAppBanner .dp-info .dp-info-subheading{font-size:12px;padding:8px 0}
+#digiAppBanner .dp-info .dp-info-store{font-size:11px;display:none}
+/* @media only screen and (max-width: 25.8125em), only screen and (max-width: 40em) and (min-width: 25.875em), only screen and (max-width: 48em) and (min-width: 40.0625em){
+#digi-header {top:120px!important}} */
+@media only screen and (min-width: 480px){#digiAppBanner .dp-info{width:55%}
+#digiAppBanner .dp-info{left:115px;top:30px}
+#digiAppBanner .dp-icon{top:30px;}
+#digiAppBanner .dp-info .dp-info-heading{font-size:18px;line-height:1.2em;}
+#digiAppBanner .dp-info .dp-info-subheading{font-size:15px;line-height:1.2em;}
+#digiAppBanner .dp-info .dp-info-store{font-size:12px;}}

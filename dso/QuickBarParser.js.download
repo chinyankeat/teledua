@@ -1,0 +1,737 @@
+// Quick bar Parser
+var JSONData = aesDecode($.trim(jsondata));
+var serviceResponse = JSONData;
+var totalContacts;
+var isPostPaid = '';
+var ispostpaidBroadbandAccount = '';
+var isprepaidBroadbandAccount = '';
+var prepaidData;
+var postpaidData;
+var billmsisdn = '';
+var prepbillemail = '';
+var isPostBroadband = false;
+var isPreBroadband = false;
+var postbillemail = '';
+var isEligibleForTTA = false;
+var customerUid = JSONData.accountOverviewResponse.customerUID;
+var customerLoginUid = JSONData.accountOverviewResponse.customerLoginUID;
+var selectedMSISD = JSONData["accountOverviewResponse"]["selectedMsisdn"];
+var postPaidPossibleValues = ['totalUnbilledAmount', 'miDataRemaining', 'voiceRemaining', 'smsRemaining'];
+var prePaidPossibleValues = ['accountBalance', 'freeInternetBalance', 'miDataRemaining', 'voiceRemaining', 'smsRemaining'];
+
+
+$(document).ready(function() {
+    createData(selectedMSISD);
+    var tt = JSONData["accountOverviewResponse"]["selectedPlanName"] == null ? '' : JSONData["accountOverviewResponse"]["selectedPlanName"];
+    LoadTotalMSISDs(JSONData["accountOverviewResponse"]["selectedMsisdn"], tt);
+    LoadDetails();
+
+});
+
+function formatMsisdn(phone) {
+    if (phone != null && phone != "" && phone.indexOf("6") == 0) {
+        var trimmedNumber = phone.substr(1, 10);
+        if (phone.length == 11)
+            return trimmedNumber.substr(0, 3) + " " + trimmedNumber.substr(3, 3) + " " + trimmedNumber.substr(6, 4)
+        else if (phone.length == 12) {
+            trimmedNumber = phone.substr(1, 11);
+            return trimmedNumber.substr(0, 3) + " " + trimmedNumber.substr(3, 3) + " " + trimmedNumber.substr(6, 5);
+        } else
+            return phone;
+    }
+    return phone;
+};
+
+function updateDetails(el) {
+    var clickedMSISDN = $(el).find('.mymsisd').attr('data-msisdn');
+    var clickedPlan = $(el).find('.myTitle').text().trim();
+    createData(clickedMSISDN);
+    LoadTotalMSISDs(clickedMSISDN, clickedPlan);
+    LoadDetails();
+}
+
+function chkMail(mid) {
+    var email_format = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    var defaultMail = " ";
+    if (mid && email_format.test(mid)) {
+        defaultMail = mid;
+    }
+    return defaultMail;
+}
+
+function formatDateforBilling(longDate) {
+    var dd = new Date(longDate);
+    return dd.getFullYear() + '-' + (dd.getMonth() + 1) + '-' + dd.getDate();
+}
+
+function formatDescDateforBilling(longDate) {
+    var dd = new Date(longDate);
+    return dd.getDate() + '/' + (dd.getMonth() + 1) + '/' + dd.getFullYear();
+}
+
+function updateBillPayCart() {
+    if (isAutoLogin) {
+        var autoLoginUrl = storeFrontURL + "/make-payment.ep?skipLogin=true";
+        $("#paymentForm").attr("action", autoLoginUrl);
+    } else {
+        var autoLoginUrl = storeFrontURL + "/make-payment.ep?skipLogin=false";
+        $("#paymentForm").attr("action", autoLoginUrl);
+    }
+    $("#paymentForm").submit();
+}
+window.makeJSONForBilling = function makeJSONForBilling() {
+    var accountCode = '';
+    var accountName = '';
+    var otsndAmnt = '';
+    var accountCD = '';
+    var currentMSISDN = +$('.selectedMSISDbottom').attr('data-msisdn');
+    var details = serviceResponse && serviceResponse.accountOverviewResponse && serviceResponse.accountOverviewResponse.AccountDetails;
+    var billingJSON;
+    var billInfo = JSONData["accountOverviewResponse"]["AccountDetails"];
+    for (var i in billInfo) {
+        if (billInfo[i].accountType.toLowerCase() == "postpaid") {
+            var innerInfo = billInfo[i]["PostpaidList"]["postpaidRecord"];
+            for (var j in innerInfo) {
+                if (+innerInfo[j]["msisdn"] == currentMSISDN) {
+                    accountCode = billInfo[i]["accountId"];
+                    accountName = billInfo[i]["accountName"];
+                    accountCD = billInfo[i]["accountCode"];
+                    otsndAmnt = billInfo[i]["outstandingAmount"];
+                    if (billInfo[i]["invoiceList"]) {
+                        var dataNode = billInfo[i]["invoiceList"]["InvoiceList"]["InvoiceRecord"];
+                        var myBillArray = [];
+                        for (var k in dataNode) {
+                            var oldDate = new Date().getDay() - 180;
+                            var refDate = new Date().setDate(oldDate);
+                            if (billInfo[i]["billingStatusInfo"] && dataNode[k]["Dates"]["InvoiceDueDate"] && refDate <= dataNode[k]["Dates"]["InvoiceDueDate"]) {
+                                var invoiceID = dataNode[k]["InvoiceId"];
+                                var billStatus = billInfo[i]["billingStatusInfo"][invoiceID]["billStatus"];
+                                if (billStatus && billStatus == "PARTIAL_PAID") billStatus = "PARTIALLY PAID";
+                                myBillArray.push({
+                                    "dueDate": formatDateforBilling(dataNode[k]["Dates"]["InvoiceDueDate"]),
+                                    "status": billStatus,
+                                    "description": formatDescDateforBilling(dataNode[k]["BillStartDate"]) + '-' + formatDescDateforBilling(dataNode[k]["BillEndDate"]) + '-' + dataNode[k]["InvoiceNumber"],
+                                    "amount": dataNode[k]["InvoiceAmount"]
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    billingJSON = {
+        "email": chkMail(postbillemail),
+        "account": {
+            "accountNumber": accountCode,
+            "accountCode": accountCD,
+            "accountName": accountName,
+            "bills": myBillArray,
+            "outstandingAmount": otsndAmnt
+        },
+        "tracking": {
+            "customerUid": customerUid,
+            "customerLoginUid": customerLoginUid
+        },
+        "returnUrl": window.location.href
+    };
+    $('input[name=data]').val(JSON.stringify(billingJSON));
+    updateBillPayCart();
+    return billingJSON;
+}
+
+function createData(sel) {
+    selectedMSISD = sel;
+    for (var i = 0 in serviceResponse["list"]) {
+        if (serviceResponse["list"][i]["msisdn"] == sel) {
+            billmsisdn = serviceResponse["list"][i]["msisdn"]
+            isPostPaid = serviceResponse["list"][i]["postpaidAccount"];
+            ispostpaidBroadbandAccount = serviceResponse["list"][i]["postpaidBroadbandAccount"];
+            isprepaidBroadbandAccount = serviceResponse["list"][i]["prepaidBroadbandAccount"];
+            prepaidData = serviceResponse["list"][i]["homePageQuickBarPrepaidBean"];
+            postpaidData = serviceResponse["list"][i]["homePageQuickBarPostpaidBean"];
+            isPostBroadband = serviceResponse["list"][i]['postpaidBroadbandAccount'];
+            isPreBroadband = serviceResponse["list"][i]['prepaidBroadbandAccount'];;
+        } else {
+            var myPlanName = serviceResponse["list"][i]["postpaidAccount"] ? serviceResponse["list"][i]["homePageQuickBarPostpaidBean"]["planName"] : serviceResponse["list"][i]["homePageQuickBarPrepaidBean"]["planName"];
+        }
+    }
+}
+
+function LoadTotalMSISDs(msisdnNew, pnameNew) {
+    var MSISDHTML = '';
+    var count = 0;
+    var dropDownData = JSONData["accountOverviewResponse"]["AccountDetails"];
+    if (pnameNew == '' || pnameNew == null) {
+        $('.selectedMSISDHeader').html('&nbsp;');
+    } else {
+        $('.selectedMSISDHeader').text(pnameNew);
+    }
+    $('.selectedMSISDbottom').text(formatMsisdn(msisdnNew));
+    $('.selectedMSISDbottom').attr('data-msisdn', msisdnNew)
+    for (var i in dropDownData) {
+
+        if (dropDownData[i].hasOwnProperty("PostpaidList")) {
+            var innerData = dropDownData[i]["PostpaidList"]["postpaidRecord"];
+            for (var j in innerData) {
+                var planTitle = innerData[j]["planName"];
+                var planMSISD = innerData[j]["msisdn"];
+                if (msisdnNew == planMSISD) {
+                    if (dropDownData[i].isAllSubscriberClosed == true || dropDownData[i].isAllSubscriberDeactivated == true) {
+                        $('.quickBarCustomWrapper').hide();
+                    }
+                }
+
+                if (msisdnNew == planMSISD) {
+                    postbillemail = dropDownData[i]["emailId"];
+                }
+                if (msisdnNew != planMSISD && !innerData[j]["isLimitedAccess"] && innerData[j]["status"].toLowerCase() != "closed" && innerData[j]["status"].toLowerCase() != "deactivated") {
+                    count++;
+                    MSISDHTML += '<li><a class="dropdown__item border-bottom media media--small dropdown-plan" onclick="updateDetails(this)" href="javascript:void(0)"><div class="dropdown__item__icon  tablet-one-twelfths mobile-one-twelfth"><span class="icon-phone-handset"></span></div>' +
+                        '<div class="clear position-relative-wrapper with-icon">' +
+                        '<strong class="text--large myTitle padding-toleft--small">' + planTitle + '</strong><div class="text--small text--muted leader--xsmall text-truncate mymsisd padding-toleft--small" data-msisdn="' + planMSISD + '">' + formatMsisdn(planMSISD) + '<br/></div></div></a></li>';
+                }
+            }
+        }
+        if (dropDownData[i].hasOwnProperty("PrePaidList")) {
+            var innerData = dropDownData[i]["PrePaidList"]["prepaidRecord"];
+            for (var j in innerData) {
+                var planTitle = innerData[j]["planName"];
+                var planMSISD = innerData[j]["msisdn"];
+                if (msisdnNew == planMSISD) {
+                    if (dropDownData[i].isAllSubscriberClosed == true || dropDownData[i].isAllSubscriberDeactivated == true) {
+                        $('.quickBarCustomWrapper').hide();
+                    }
+                    if (innerData && innerData[j].isSubscriberElegibleForAdvTalkTime) {
+                        isEligibleForTTA = true;
+                    }
+                }
+                var updatedURL = '';
+
+                if (msisdnNew == planMSISD) {
+                    prepbillemail = dropDownData[i]["emailId"];
+
+                }
+                if (msisdnNew != planMSISD && !innerData[j]["isLimitedAccess"] && innerData[j]["status"].toLowerCase() != "closed" && innerData[j]["status"].toLowerCase() != "deactivated") {
+                    count++;
+                    MSISDHTML += '<li><a class="dropdown__item border-bottom media media--small dropdown-plan" onclick="updateDetails(this)" href="javascript:void(0)"><div class="dropdown__item__icon tablet-one-twelfths mobile-one-twelfth"><span class="icon-phone-handset"></span></div>' +
+                        '<div class="clear position-relative-wrapper with-icon">' +
+                        '<strong class="text--large myTitle padding-toleft--small">' + planTitle + '</strong><div class="text--small text--muted leader--xsmall text-truncate mymsisd padding-toleft--small" data-msisdn="' + planMSISD + '">' + formatMsisdn(planMSISD) + '<br/></div></div></a></li>';
+                }
+            }
+        }
+    }
+
+    $('#subscription-dropdown-list').html(MSISDHTML);
+    if (!count) {
+        var dropdown_cont = $('#subscription-dropdown');
+        dropdown_cont.find('.dropdown__content').remove();
+        $('.dropdown__button').removeAttr('data-toggle');
+        $('.dropdown__button a').removeAttr('href');
+    }
+}
+
+function LoadDetails() {
+    if (isPostPaid || ispostpaidBroadbandAccount) {
+        var postplanStatsHTML = '<ul class="clear text--telenor">';
+        for (var i in postPaidPossibleValues) {
+            switch (postPaidPossibleValues[i]) {
+                case 'totalUnbilledAmount':
+                    if (postpaidData.hasOwnProperty(postPaidPossibleValues[i])) {
+                        var myUnitRM = '';
+                        var myUnitGB = '';
+                        /*ispostpaidBroadbandAccount = false;
+                            if(ispostpaidBroadbandAccount){myUnitGB =' GB'; myUnitRM ='';}
+                            else{myUnitRM ='RM '; myUnitGB ='';}*/
+                        var tUsage = postpaidData[postPaidPossibleValues[i]];
+                        if (!tUsage) tUsage = "0.0";
+                        postplanStatsHTML += '<li class="usage-bar__item with-devider ';
+                        postplanStatsHTML += (postpaidData["creditLimitApproaching"]) ? ' is-highlighted" title="Your account is approaching your credit limit"' : '"';
+                        postplanStatsHTML += '><div class="usage-bar__title">Unbilled Amount</div><div class="usage-bar__content">';
+                        postplanStatsHTML += '<a href="/cs/Satellite/Page/myocs/default/Dashboard"><span class="usage-bar__unit">RM&nbsp;</span><span class="usage-bar__number">' + tUsage + '</span></a></div><div class="usage-bar__footer title--xxxsmall is-highlighted"><a href="javascript:void(0)" onclick="makeJSONForBilling()">';
+                        postplanStatsHTML += (postpaidData["overDue"]) ? 'Payment overdue' : (postpaidData["paymentDueDate"] != null) ? ('Payment due date ' + formatDate(postpaidData["paymentDueDate"])) : 'Pay Now';
+                        postplanStatsHTML += '</a></div></li>';
+                    }
+                    break;
+                case 'miDataRemaining':
+                    if (postpaidData.hasOwnProperty(postPaidPossibleValues[i])) {
+                        if (postpaidData['miUnit'] == "GB") {
+                            var miData = (+postpaidData[postPaidPossibleValues[i]]).toFixed(1);
+                        }
+                        if (postpaidData['miUnit'] == "MB") {
+                            var miData = Math.floor(+postpaidData[postPaidPossibleValues[i]]);
+                        }
+
+                        var heading = isPostBroadband ? "Base Internet Plan" : "Internet Remaining";
+                        postplanStatsHTML += '<li class="usage-bar__item"><div class="usage-bar__title">' + heading + '</div>';
+                        postplanStatsHTML += '<div class="usage-bar__content"><a href="/cs/Satellite/Page/myocs/default/Usage"><span class="usage-bar__number">' + miData + '</span><span class="usage-bar__unit">&nbsp;' + postpaidData['miUnit'] + '</span></a></div>';
+                        if (postpaidData["showQuotaTopUpLink"] == true) {
+                            postplanStatsHTML += '<div class="usage-bar__footer title--xxxsmall"><a class="bullet-link" href="/cs/Satellite/Page/myocs/default/plan_addons?action=QTU">Quota Top Up</a></div></div>';
+                        } else if (postpaidData["subscribeToMI"] == true) {
+                            postplanStatsHTML += '<div class="usage-bar__footer title--xxxsmall"><a class="bullet-link" href="/cs/Satellite/Page/myocs/default/plan_addons?action=MI">Subscribe to MI</a></div></div>';
+                        } else {
+                            postplanStatsHTML += '<div class="usage-bar__footer title--xxxsmall"><a class="" href="#"></a></div></li></li>';
+                        }
+                    }
+                    break;
+                case 'voiceRemaining':
+                    if (postpaidData.hasOwnProperty(postPaidPossibleValues[i])) {
+                        postplanStatsHTML += '<li class="usage-bar__item">' +
+                            '<div class="usage-bar__title">Voice Remaining</div>' +
+                            '<div class="usage-bar__content"><a href="/cs/Satellite/Page/myocs/default/Usage"><span class="usage-bar__number">';
+                        if (postpaidData[postPaidPossibleValues[i]]) postplanStatsHTML += postpaidData[postPaidPossibleValues[i]];
+                        else postplanStatsHTML += '00:00:00';
+                        postplanStatsHTML += '</span><span class="usage-bar__unit">&nbsp;</span></a></div><div class="usage-bar__footer title--xxxsmall">' +
+                            '<a class="" href="#"></a></div></li>';
+                    }
+                    break;
+                case 'smsRemaining':
+                    if (postpaidData.hasOwnProperty(postPaidPossibleValues[i])) {
+                        postplanStatsHTML += '<li class="usage-bar__item">' +
+                            '<div class="usage-bar__title">SMS Remaining</div>' +
+                            '<div class="usage-bar__content"><a href="/cs/Satellite/Page/myocs/default/Usage"><span class="usage-bar__number">';
+                        if (postpaidData[postPaidPossibleValues[i]]) postplanStatsHTML += postpaidData[postPaidPossibleValues[i]];
+                        else postplanStatsHTML += '0';
+                        postplanStatsHTML += '</span><span class="usage-bar__unit">&nbsp;SMS</span></a></div><div class="usage-bar__footer title--xxxsmall">' +
+                            '<a class="" href="#"></a></div></li>';
+                    }
+                    break;
+            }
+        }
+        $('.planStats').html(postplanStatsHTML);
+    } else {
+        var prepaidPlanStatsHTML = '<ul class="clear text--telenor">';
+        var count = 0;
+        for (var i in prePaidPossibleValues) {
+            if (count <= 3) {
+                switch (prePaidPossibleValues[i]) {
+                    case 'accountBalance':
+                        var encodedpayURL = encodeURIComponent('reload-details.ep?msisdn=' + billmsisdn.substr(1) + '&email=' + chkMail(prepbillemail) + '&customerUid=' + customerUid + '&customerLoginUid=' + customerLoginUid + '&returnUrl=' + window.location.href);
+                        if (isAutoLogin) {
+                            var reloadURL = storeFrontURL + '/reload-details.ep?msisdn=' + billmsisdn.substr(1) + '&email=' + chkMail(prepbillemail) + '&customerUid=' + customerUid + '&customerLoginUid=' + customerLoginUid + '&returnUrl=' + window.location.href;
+                        } else {
+                            var reloadURL = storeFrontURL + '/require-login.ep?next=' + encodedpayURL;
+                        }
+                        if (prepaidData.hasOwnProperty(prePaidPossibleValues[i])) {
+                            var myUnitRM = '';
+                            var myUnitGB = '';
+                            /*isprepaidBroadbandAccount = false;
+                            if(isprepaidBroadbandAccount){myUnitGB =' GB'; myUnitRM ='';}
+                            else{myUnitRM ='RM '; myUnitGB ='';}*/
+                            prepaidPlanStatsHTML += '<li class="usage-bar__item ';
+                            prepaidPlanStatsHTML += (prepaidData["mainBalanceExpiry"] || prepaidData["mainBalanceColorRed"]) ? ' is-highlighted"' : '"';
+                            prepaidPlanStatsHTML += '><div class="usage-bar__title">Main balance</div><div class="usage-bar__content">';
+                            prepaidPlanStatsHTML += '<a class="reload-pin" href="' + reloadURL + '"><span class="usage-bar__unit">RM </span><span class="usage-bar__number">';
+                            prepaidPlanStatsHTML += (prepaidData[prePaidPossibleValues[i]]) ? (+prepaidData[prePaidPossibleValues[i]]).toFixed(2) : '0.00';
+                            prepaidPlanStatsHTML += '</span></a></div><div class="expiry title--xxxsmall is-highlighted"><a class="reload-pin" href="' + reloadURL + '">';
+                            prepaidPlanStatsHTML += (prepaidData["mainBalanceExpiry"]) ? 'Expired' : (prepaidData["expiresInDaysForAccountBalance"] != null) ? 'Expires in ' + prepaidData["expiresInDaysForAccountBalance"] + ' Days' : 'Expires in 0 Days';
+                            prepaidPlanStatsHTML += '</a></div>';
+                            if (isEligibleForTTA) {
+                                prepaidPlanStatsHTML += '<div class="talktime-advance title--xxxsmall is-highlighted"><a href="/cs/Satellite/Page/myocs/default/talktimeAdvance?msisdn=' + selectedMSISD + '">Talktime Advance</a></div>';
+                            }
+                            prepaidPlanStatsHTML += '</li>';
+                            count++;
+                        }
+                        break;
+                    case 'freeInternetBalance':
+                        if (prepaidData.hasOwnProperty(prePaidPossibleValues[i])) {
+                            if (prepaidData['freeInternetBalanceUnit'] == "GB") {
+                                var freeInternetBalanceData = (+prepaidData[prePaidPossibleValues[i]]).toFixed(1);
+                            }
+                            if (prepaidData['freeInternetBalanceUnit'] == "MB") {
+                                var freeInternetBalanceData = Math.floor(+prepaidData[prePaidPossibleValues[i]]);
+                            }
+                            if (prepaidData.hasOwnProperty(prePaidPossibleValues[i]) && prepaidData[prePaidPossibleValues[i]] && prepaidData['miDataRemaining'] <= 0 && prepaidData[prePaidPossibleValues[i]] > 0) {
+                                prepaidPlanStatsHTML += '<li class="usage-bar__item">' +
+                                    '<div class="usage-bar__title">Free Internet Balance</div>' +
+                                    '<div class="usage-bar__content"><a href="/cs/Satellite/Page/myocs/default/Usage"><span class="usage-bar__number">' +
+                                    freeInternetBalanceData + '</span><span class="usage-bar__unit">&nbsp;' + prepaidData['freeInternetBalanceUnit'] + '</span></a></div><div class="usage-bar__footer title--xxxsmall">';
+                                prepaidPlanStatsHTML += '<a class="bullet-link" href="/cs/Satellite/Page/myocs/default/plan_addons?action=MI">Subscribe to MI</a>';
+                                prepaidPlanStatsHTML += '</div></li>';
+                                count++;
+                            }
+                        }
+                        break;
+                    case 'miDataRemaining':
+                        if (prepaidData.hasOwnProperty(prePaidPossibleValues[i])) {
+                            if (prepaidData['miUnit'] == "GB") {
+                                var miData = (+prepaidData[prePaidPossibleValues[i]]).toFixed(1);
+                            }
+                            if (prepaidData['miUnit'] == "MB") {
+                                var miData = Math.floor(+prepaidData[prePaidPossibleValues[i]]);
+                            }
+                            if (prepaidData.hasOwnProperty(prePaidPossibleValues[i]) && prepaidData[prePaidPossibleValues[i]]) {
+                                var heading = isPreBroadband ? "Base Internet Plan" : "Internet Balance";
+                                prepaidPlanStatsHTML += '<li class="usage-bar__item">' +
+                                    '<div class="usage-bar__title">' + heading + '</div>' +
+                                    '<div class="usage-bar__content"><a href="/cs/Satellite/Page/myocs/default/Usage"><span class="usage-bar__number">' +
+                                    miData + '</span><span class="usage-bar__unit">&nbsp;' + prepaidData['miUnit'] + '</span></a></div><div class="usage-bar__footer title--xxxsmall">';
+                                if (prepaidData[prePaidPossibleValues[i]] == "0" || prepaidData[prePaidPossibleValues[i]] == "0.0" || prepaidData[prePaidPossibleValues[i]] == "0.00") {
+                                    prepaidPlanStatsHTML += '<a class="bullet-link" href="/cs/Satellite/Page/myocs/default/plan_addons?action=QTU">Quota Top Up</a>';
+                                } else {
+                                    if (prepaidData['miDataExpiryDateRange'])
+                                        prepaidPlanStatsHTML += '<a class="bullet-link" href="/cs/Satellite/Page/myocs/default/plan_addons?action=QTU">Expiry Date Range:' + prepaidData['miDataExpiryDateRange'] + '</a>'
+                                    else
+                                        prepaidPlanStatsHTML += '<a class="bullet-link" href="/cs/Satellite/Page/myocs/default/plan_addons?action=QTU">Quota Top Up</a>'
+                                }
+
+                                prepaidPlanStatsHTML += '</div></li>';
+                                count++;
+                            }
+                        }
+                        break;
+                    case 'voiceRemaining':
+                        if (prepaidData.hasOwnProperty(prePaidPossibleValues[i]) && prepaidData[prePaidPossibleValues[i]]) {
+                            prepaidPlanStatsHTML += '<li class="usage-bar__item">' +
+                                '<div class="usage-bar__title">Voice Balance</div>' +
+                                '<div class="usage-bar__content"><a href="/cs/Satellite/Page/myocs/default/Usage"><span class="usage-bar__number">' +
+                                prepaidData[prePaidPossibleValues[i]] + '</span><span class="usage-bar__unit">&nbsp;</span></a></div><div class="usage-bar__footer title--xxxsmall">';
+                            prepaidPlanStatsHTML += prepaidData["voiceExpiryDateRange"] != null ? '<a href="#" class="bullet-link">Expiry Date Range: ' + prepaidData["voiceExpiryDateRange"] + '</a>' : '';
+                            prepaidPlanStatsHTML += '</div></li>';
+                            count++;
+                        }
+                        break;
+                    case 'smsRemaining':
+                        if (prepaidData.hasOwnProperty(prePaidPossibleValues[i]) && prepaidData[prePaidPossibleValues[i]]) {
+                            prepaidPlanStatsHTML += '<li class="usage-bar__item">' +
+                                '<div class="usage-bar__title">Free Local SMS Balance</div>' +
+                                '<div class="usage-bar__content"><a href="/cs/Satellite/Page/myocs/default/Usage"><span class="usage-bar__number">' +
+                                prepaidData[prePaidPossibleValues[i]] + '</span><span class="usage-bar__unit">&nbsp;SMS</span></a></div><div class="usage-bar__footer title--xxxsmall">';
+                            prepaidPlanStatsHTML += prepaidData["expiresInDaysForSms"] != null ? '<a href="#" class="bullet-link">Expiry Date Range: ' + prepaidData["expiresInDaysForSms"] + '</a>' : '';
+                            prepaidPlanStatsHTML += '</div></li>';
+                            count++;
+                        }
+                        break;
+                }
+            }
+        }
+        $('.planStats').html(prepaidPlanStatsHTML);
+    }
+    $('.dropdown__content__close').off('click')
+    $('.dropdown__content__close').on('click', function() {
+        $('div.with-loadmore').removeClass('is-open');
+    });
+
+    // format date to dd/mm/yyyy
+    function formatDate(longDate) {
+        if (longDate == null || longDate == "null" || longDate == "" || longDate == undefined || longDate == "undefined")
+            return "";
+        var date = new Date(longDate);
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        return day + "/" + month + "/" + date.getFullYear();
+    }
+}
+$(document).ready(function() {
+
+    $('.dropdown.with-loadmore#subscription-dropdown .dropdown__button').click(function() {
+        if ($('#subscription-dropdown-list > li').length > 0) {
+            $(this).parent().toggleClass('is-open');
+        }
+    });
+
+    $(document).click(function(e) {
+        if ($(e.target).parents('.dropdown.with-loadmore').length == 0 && !$(e.target).hasClass('with-loadmore'))
+            $('.dropdown.with-loadmore#subscription-dropdown').removeClass('is-open');
+    });
+
+    $('#subscription-dropdown').on("click", ".dropdown__content__close", function() {
+        $('.dropdown.with-loadmore#subscription-dropdown').removeClass('is-open');
+    });
+
+    var originalVoucher;
+    var isPopUpDisplayed = false;
+    $("body").on('click', ".reload-pin", function(e) {
+        e.preventDefault();
+        if (!isPopUpDisplayed) {
+            isPopUpDisplayed = true;
+            var url = '/cs/Satellite?pagename=ecomm/digi/body/myocs/displayReloadPopup';
+            var data = '';
+            sendAjax(url, data, callbackForPopUp);
+        } else {
+            displayPopup();
+        }
+    });
+
+    $("body").on('click', "#reloadViaPin", function(e) {
+        e.preventDefault();
+        $("#submitVoucher").attr("disabled","true");
+        $(".reload-popup1").addClass("is-hidden");
+        $(".reload-popup2").removeClass("is-hidden");
+        $("#voucherNumber").val('');
+        $(".voucher-error").addClass("is-hidden");
+    });
+
+    $("body").on('click', ".icon-reject", function() {
+        $(this).closest(".popup--overlay").addClass("is-hidden");
+    });
+
+    $("body").on("keypress", "#voucherNumber", function(e) {
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+        }
+    });
+
+    $("body").on("keyup", "#voucherNumber", function(e) {
+        validateVoucher();
+    });
+
+    $("body").on("paste", "#voucherNumber", function(e) {
+        setTimeout(function() {
+            var voucherVal = document.getElementById('voucherNumber').value;
+            var voucherOri = voucherVal.replace(/ /g, '');
+            if (isNaN(voucherOri)) {
+                document.getElementById('voucherNumber').value = '';
+            } else if (!isNaN(voucherOri) && voucherVal.length > 19) {
+                document.getElementById('voucherNumber').value = voucherVal.slice(0, 19);
+            }
+        }, 0);
+    });
+
+    $("body").on("input", "#voucherNumber", function(e) {
+        e.target.value = e.target.value.replace(/[^\d]/g, '').replace(/(.{4})/g, '$1 ').trim();
+    });
+
+
+    $("body").on("click", "#submitVoucher", function() {
+        $(".back-btn1").attr("disabled", "true");
+        $(".reload-popup2 a").css('pointer-events', 'none');
+        $(this).attr({ 'data-loading': 'true', 'disabled': 'disabled' })
+        submitVoucher();
+    });
+
+    $("body").on("click", ".voucher-html .back-btn1", function() {
+        $('.reload-popup2').addClass("is-hidden");
+        $('.reload-popup1').removeClass("is-hidden");
+    });
+
+    $("body").on("click", ".voucher-response-html .back-btn2", function() {
+        $('.voucher-response-html').addClass("is-hidden");
+        $('.voucher-html').removeClass("is-hidden");
+    });
+
+    $("body").on("click", ".reload-popup2 .ok-button", function() {
+        var data = aesDecode($.trim(httpRes));
+        var url = window.location.href;
+        url = url.replace("?refresh=true", "");
+        if (url && url.indexOf("#") != -1) {
+            url = url.replace("#", "");
+        }
+        if (data.isRequestSuccessful) {
+            window.location.href = url + "?refresh=true";
+        } else {
+            window.location.href = url.replace("?refresh=true", "");
+        }
+    });
+});
+
+var httpRes;
+var isCtrl = false;
+
+function callbackForPopUp() {
+    $("body").append(httpRes);
+    addGTMCode();
+    displayPopup();
+    var onlineHref = $('.reload-pin').attr('href');
+    $("#reloadOnline").attr('href', onlineHref);
+
+    //PubSub.publish('setReloadURL');
+}
+
+
+function sendAjax(url, data, callback) {
+    $.ajax({
+        url: url,
+        data: data,
+        type: "GET",
+        success: function(httpObj, res) {
+            httpRes = httpObj;
+            callback();
+        },
+        complete: function(httpObj, res) {
+            if (callback == callbackVoucher) {
+                $(".back-btn1").removeAttr("disabled");
+                $(".reload-popup2 a").css('pointer-events', 'auto');
+            }
+        },
+        error: function(httpObj, res) {
+
+        }
+    });
+}
+
+function displayPopup() {
+    $(".reload-popup1").removeClass("is-hidden");
+}
+
+function validateVoucher() {
+    var voucherVal = document.getElementById('voucherNumber').value;
+    var voucherLength = voucherVal.length;
+    var voucherBtn = document.getElementById('submitVoucher');
+    $(".voucher-error").addClass("is-hidden");
+    if (voucherLength == 0) {
+        voucherBtn.setAttribute("disabled", "true");
+        $(".voucher-error.voucher-error-empty").removeClass("is-hidden");
+    } else if (voucherLength != 19 && voucherLength != 29) {
+        voucherBtn.setAttribute("disabled", "true");
+        $(".voucher-error.voucher-error-length").removeClass("is-hidden");
+    } else {
+        voucherBtn.removeAttribute("disabled");
+        $(".voucher-error").addClass("is-hidden");
+    }
+}
+
+function appendDash() {
+    var voucherVal = document.getElementById('voucherNumber').value;
+    var voucherLength = voucherVal.length;
+    if (voucherLength == 4 || voucherLength == 9 || voucherLength == 14) {
+        document.getElementById('voucherNumber').value = voucherVal + ' ';
+    }
+}
+
+function submitVoucher() {
+    var voucherVal = document.getElementById('voucherNumber').value;
+    originalVoucher = voucherVal.replace(/ /g, '');
+    console.log("Voucher Number is " + originalVoucher);
+    var url = '/cs/Satellite?pagename=ecomm/digi/body/myocs/displayReloadPopup';
+    var msisdn = $("#quickbar .dropdown__button .selectedMSISDbottom").attr("data-msisdn");
+    var dataMSISDN = "6" + msisdn.replace(/ /g, '');
+    var data = {
+        'Msisdn': dataMSISDN,
+        'VoucherNumber': originalVoucher
+    }
+    sendAjax(url, data, callbackVoucher);
+}
+
+function callbackVoucher() {
+    var data = aesDecode($.trim(httpRes));
+    // var data = JSON.parse(httpRes.trim());
+    $(".voucher-response-html .icon-thumb-down,.voucher-response-html .icon-thumb-up").addClass("is-hidden");
+    if (typeof data.isRequestSuccessful != 'undefined') {
+        $(".voucher-response-html .back-btn2").removeClass("is-hidden");
+        $("#submitVoucher").removeAttr("disabled data-loading");
+        $(".reload-popup2 .voucher-html").addClass("is-hidden");
+        $(".reload-popup2 .response-text").text(data.displayMessage);
+        if (data.isRequestSuccessful) {
+            $(".voucher-response-html .icon-thumb-up").removeClass("is-hidden");
+            $(".voucher-response-html .back-btn2").addClass("is-hidden");
+        } else {
+            $(".voucher-response-html .icon-thumb-down").removeClass("is-hidden");
+        }
+        $(".reload-popup2 .voucher-response-html").removeClass("is-hidden");
+    }
+}
+
+function addGTMCode() {
+    if (typeof pageName !== 'undefined') {
+        var page = pageName;
+    } else {
+        var page = "home_page";
+    }
+    var gtmCodeVoucher = "label:event,value:trackEvent,isreal:true,source:null|label:eventDetails.category,value:mydigi,isreal:true,source:null|label:eventDetails.action,value:" + page + ",isreal:true,source:null|label:eventDetails.label,value:reload_voucher,isreal:true,source:null";
+    var gtmCodeOnline = "label:event,value:trackEvent,isreal:true,source:null|label:eventDetails.category,value:mydigi,isreal:true,source:null|label:eventDetails.action,value:" + page + ",isreal:true,source:null|label:eventDetails.label,value:reload_balance,isreal:true,source:null,";
+    $("#submitVoucher").attr('data-virtual', gtmCodeVoucher);
+    $("#reloadOnline").attr('data-virtual', gtmCodeOnline);
+    var $VIRTUAL = $('[data-virtual]');
+    $VIRTUAL.each(function() {
+        var el = this;
+        new virtualTracker(el);
+    });
+}
+
+var virtualTracker = function(el) {
+    var enableTracking = true;
+    if (!enableTracking) {
+        return false;
+    }
+    var self = this;
+    this.$el = $(el);
+    this.$el.on("click", this.callEvent);
+};
+
+virtualTracker.prototype.callEvent = function() {
+    event.preventDefault();
+    var anchor = $(this);
+    var objectmatrix = $(this).data('virtual');
+
+    var objectArr = objectmatrix.split('|');
+    var layerObj = {};
+    for (var i = 0; i < objectArr.length; i++) {
+        var label = objectArr[i].substring(objectArr[i].indexOf(':', objectArr[i].indexOf('label')) + 1, objectArr[i].indexOf(',', objectArr[i].indexOf('label'))).trim();
+        var isreal = objectArr[i].substring(objectArr[i].indexOf(':', objectArr[i].indexOf('isreal')) + 1, objectArr[i].indexOf(',', objectArr[i].indexOf('isreal'))).trim();
+        var val = null;
+        if (isreal == "true") {
+            val = objectArr[i].substring(objectArr[i].indexOf(':', objectArr[i].indexOf('value')) + 1, objectArr[i].indexOf(',', objectArr[i].indexOf('value'))).trim();
+        } else {
+            val = $(objectArr[i].substring(objectArr[i].indexOf(':', objectArr[i].indexOf('source')) + 1, objectArr[i].indexOf(',', objectArr[i].indexOf('source'))).trim()).html();
+        }
+        layerObj[label] = val;
+    }
+    dataLayer.push(layerObj);
+
+
+    var link = $(anchor).attr('data-link') || $(anchor).attr('href');
+    var func_click = $(anchor).data("click");
+    if (!!func_click) {
+        var func = window[func_click];
+        func.call();
+    }
+    if (!!link) {
+        window.location.href = link;
+    }
+};
+
+function aesDecode(encodedString) {
+    CryptoJS.pad.NoPadding = { pad: function() {}, unpad: function() {} };
+
+    function padString(source) {
+        var paddingChar = ' ';
+        var size = 16;
+        var x = source.length % size;
+        var padLength = size - x;
+        for (var i = 0; i < padLength; i++) source += paddingChar;
+        return source;
+    }
+
+    var key = CryptoJS.enc.Latin1.parse('0123456789abcdef');
+    var iv = CryptoJS.enc.Latin1.parse('AAAAAAAAAAAAAAAA');
+
+    var val = encodedString;
+    var decrypted = CryptoJS.AES.decrypt(val, key, {
+        iv: iv,
+        // padding: CryptoJS.pad.NoPadding,
+        mode: CryptoJS.mode.CBC
+    }).toString(CryptoJS.enc.Utf8);
+    
+    var ab = JSON.parse(decrypted);
+    
+    return JSON.parse(decrypted);
+};
+
+
+function isDigit(e) {
+
+    var voucherVal = document.getElementById('voucherNumber').value;
+
+
+    // var key = e.which || e.keyCode;
+
+    // if (!e.shiftKey && !e.altKey && !e.ctrlKey &&
+    //     key >= 48 && key <= 57 ||
+    //     // Numeric keypad        
+    //     key >= 96 && key <= 105 ||
+    //     key == 109 || key == 107 ||
+    //     // Backspace and Tab and Enter        
+    //     key == 35 || key == 36 ||
+    //     // left and right arrows
+    //     key == 37 || key == 39 ||
+    //     // Del and Ins
+    //     key == 46 || key == 45 || key == 8)
+    //     return true;
+    // else
+    //     e.preventDefault();
+}

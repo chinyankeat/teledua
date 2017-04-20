@@ -1,0 +1,386 @@
+.quickBarCustomWrapper{margin-top:0px; border-bottom: solid 1px #ccc;}
+.moduleContainer{padding:20px 0;}
+.dropdown__content{left: auto; top: auto;}
+.lineHeight__1em{line-height:1em;}
+.list__1{margin-top:10px; height:65px;}
+.list__2{height:65px;clear:both;}
+
+.dropdownOuter{float: left;
+  display: block;
+  margin-right: 2.128%;
+  width:29.404%;}
+.dropdown_icon_quickbar{position:absolute; right:0 !important; top: 10px !important; font-size: 26px !important;}
+.tablet-one-quarter{}
+.border-one-quarter{border-right: solid 1px #ccc;}
+.purpul{clear:both; font-weight:700; color:#990F99; font-family:"telenorbold";}
+.purpul a{color:#990F99;}
+.purpul a:hover{color:#990F99;}
+.purpul .text--small{color:#474747; font-weight:700; font-family:"telenorbold"; font-size:1rem;}
+.tablet-one-quarter .text--small{font-weight:700;}
+.category-filter a .icon:before{}
+.text--dicons{ float:left; font-weight:700; font-family:"telenorbold"; font-size:1.8rem; padding-top:12px; color:#990F99;}
+.category-filter a .icon:before{font-size:30px; color:#990F99; clear:none; float:left;}
+#main .usage-bar .category-filter li{width:20%; margin:0; padding:0;}
+.category-filter li+li{border:none;}
+.category-filter li .text--small{ text-align:left;}
+.icon-telenor{font-size: 27px;float: left;margin: 0 5px 0 0; padding: 0;color:#01ACED;}
+.yellowButton{line-height: 2.375rem; font-size:0.9rem;
+  -webkit-appearance: none;
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  display: inline-block;
+  padding: 1px 8px;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  -webkit-transition: all 0.125s; color#333333;
+  transition: all 0.125s; background:#ffdd00; border:solid 1px #ffba03; margin-top:10px;}
+.yellowButton span.text--small{font-size: 0.813rem; color: #757575;}
+.reloadIcon{ background:url("../assets/icons/reload1.png") no-repeat left top;width: 27px;height: 34px;float: left; margin:5px 5px 0 0px;}
+.broadbandIcon{ background:url("../assets/icons/totpupdata1.png") no-repeat left top;width: 26px;height: 34px;float: left; margin:5px 5px 0 0px;}
+.payIcon{ background:url("../assets/icons/$1.png") no-repeat left top;width: 16px;height: 34px;float: left;margin:5px 5px 0 0px;}
+.dropdownItem{position: absolute;
+  left: 10px;
+  top:10px;
+  bottom: 0;
+  max-width: 35px;}
+.circle{ color: #adadad;
+  font-size: 20px;
+  float: left;
+  margin: 10px 10px 0 10px;}
+.phoneBlock{left:50px;}
+.tablet-one-quarter .dropdown__button{border:none;}
+#subscription-dropdown .no-border {border:0}
+.dropdown__content .text--large{font-size:13px;}
+.dropdown__list .dropdown__item {padding:10px;}
+.fontRed{color:red !important; font-family: "telenorbold";}
+.fontRed:hover {background-color:#FFF;}
+.fontRed .text--small {color: #474747;font-weight: 700;font-family: "telenorbold";}
+.moduleContainer { max-width:70rem;}
+
+.main-balance:hover {
+    text-overflow: inherit;
+    overflow: visible;
+    color:inherit !important; 
+}
+.main-balance {
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    display:block;
+    width: 180px;
+    background-color: #fff;
+}
+@media only screen and (max-width: 37.5em) {
+.usage-bar__item .talktime-advance { 
+    margin-bottom: 5px;
+    display: inline-block;    
+    float: right;
+    font-weight: bold;
+    font-size: 12px;
+    clear: both;
+    color: #474747;
+}
+
+.usage-bar__item .expiry { 
+    margin-bottom: 5px;
+    display: inline-block;    
+    float: right;
+    font-weight: bold;
+    font-size: 12px;
+    clear: both;
+    color: #474747;
+}
+}
+
+.usage-bar__item .talktime-advance {
+background: #e0e0e0; 
+padding: 5px; 
+width: 140px;
+margin: 0 auto;
+clear:both; 
+text-align: center;
+}
+
+.usage-bar__item .expiry {
+background: #e0e0e0; 
+padding: 5px; 
+width: 140px;
+margin: 0 auto;
+clear:both; 
+text-align: center;
+margin-bottom: 5px;
+}
+
+.dropdown__button .icon-arrow-down:after {
+    border-left: 1px solid #c7c7c7;
+    color: inherit;
+    content: "";
+    position: absolute;
+    top: 7px;
+    right: 32px;
+    bottom: 7px;
+}
+
+.dropdown__button .icon-arrow-down:before {
+    color: inherit;
+    font-size: 32px;
+    line-height: 1em;
+    height: 28px;
+    position: absolute;
+    top: 4px;
+    left: 0;
+}
+
+#content .usage-bar {
+  /*max-width:100%;*/
+  background: #fff;
+}
+
+/* Reload Online CSS for popup  */
+
+.popup--overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(193, 193, 193, 0.4);
+  width: 100%;
+  height: 100%;
+  z-index: 9000;
+}
+
+.alert--overlay {
+  z-index: 9999 !important;
+}
+
+.reload-popup1 .popup-container, .reload-popup2 .popup-container {
+  max-width: 32rem;
+  width: 100%;
+  background-color: #fff;
+  top: 20%;
+  margin: 0 auto;
+  position: relative;
+}
+.reload-popup1 .border--bottom--light, .reload-popup2 .border--bottom--light {
+  border-bottom: 1px solid #e0e0e0;
+}
+.reload-popup1 .border, .reload-popup1 .box--default, .reload-popup2 .border, .reload-popup2 .box--default {
+  border: 1px solid #c7c7c7;
+}
+.reload-popup1 .boxshadow .button--action, .reload-popup2 .boxshadow .button--action {
+  box-shadow: inset 0 0 0 1px #ffbf00;
+  border: none;
+}
+.reload-popup1 .button--action, .reload-popup2 .button--action {
+  border: 1px solid #ffbf00;
+  background: #fd0;
+  color: #474747;
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  font-size: 16px;
+}
+
+@media only screen and (min-width: 37.5em) {
+  .reload-popup1 .box, .reload-popup1 .box--beige-gradient, .reload-popup1 .box--default, .reload-popup1 .box--greyed, .reload-popup1 .box--white, .reload-popup1 .box--yellow, .reload-popup1 .box--yellow-gradient-pattern, .reload-popup2 .box, .reload-popup2 .box--beige-gradient, .reload-popup2 .box--default, .reload-popup2 .box--greyed, .reload-popup2 .box--white, .reload-popup2 .box--yellow, .reload-popup2 .box--yellow-gradient-pattern {
+    padding: 1.25rem;
+  }
+}
+.reload-popup1 .box, .reload-popup1 .box--beige-gradient, .reload-popup1 .box--default, .reload-popup1 .box--greyed, .reload-popup1 .box--white, .reload-popup1 .box--yellow, .reload-popup1 .box--yellow-gradient-pattern, .reload-popup2 .box, .reload-popup2 .box--beige-gradient, .reload-popup2 .box--default, .reload-popup2 .box--greyed, .reload-popup2 .box--white, .reload-popup2 .box--yellow, .reload-popup2 .box--yellow-gradient-pattern {
+  padding: .688rem .625rem .563rem;
+  overflow: hidden;
+  position: relative;
+}
+@media only screen and (min-width: 37.5em) {
+  .reload-popup1 .heading--small, .reload-popup1 .sg-content__docs h2, .reload-popup1 .sg-markdown h2, .reload-popup1 .title--small, .reload-popup2 .heading--small, .reload-popup2 .sg-content__docs h2, .reload-popup2 .sg-markdown h2, .reload-popup2 .title--small {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin: 0;
+    padding: 0.8em;
+  }
+}
+.reload-popup1 .omega, .reload-popup1 .pull-right, .reload-popup2 .omega, .reload-popup2 .pull-right {
+  margin-right: 0;
+  float: right;
+}
+.reload-popup1 .mobile-one-whole, .reload-popup2 .mobile-one-whole {
+  float: left;
+  display: block;
+  margin-right: 2.128%;
+  width: 100%;
+}
+.reload-popup1 .border, .reload-popup1 .box--default, .reload-popup2 .border, .reload-popup2 .box--default {
+  border: 1px solid #c7c7c7;
+}
+.reload-popup1 .leader--xsmall, .reload-popup2 .leader--xsmall {
+  margin-top: 5px;
+}
+.reload-popup1 .float-right, .reload-popup1 .pull-right, .reload-popup2 .float-right, .reload-popup2 .pull-right {
+  float: right;
+}
+.reload-popup1 .text--med, .reload-popup2 .text--med {
+  font-size: 1rem;
+  line-height: 1;
+}
+.reload-popup1 .padding-leader, .reload-popup2 .padding-leader {
+  padding-top: 20px;
+}
+.reload-popup1 .mobile-one-whole, .reload-popup2 .mobile-one-whole {
+  float: left;
+  display: block;
+  margin-right: 2.128%;
+  width: 100%;
+}
+.reload-popup1 .text--med, .reload-popup2 .text--med {
+  font-size: 1rem;
+  line-height: 1;
+}
+.reload-popup1 .padding-toleft, .reload-popup2 .padding-toleft {
+  padding-left: 20px;
+}
+.reload-popup1 .padding-trailer, .reload-popup2 .padding-trailer {
+  padding-bottom: 20px;
+}
+@media only screen and (min-width: 37.5em) {
+  .reload-popup1 .tablet-nine-twelfths, .reload-popup1 .tablet-three-quarters, .reload-popup2 .tablet-nine-twelfths, .reload-popup2 .tablet-three-quarters {
+    float: left;
+    display: block;
+    margin-right: 2.128%;
+    width: 74.468%;
+  }
+}
+.reload-popup1 .mobile-nine-twelfths, .reload-popup1 .mobile-three-quarters, .reload-popup2 .mobile-nine-twelfths, .reload-popup2 .mobile-three-quarters {
+  float: left;
+  display: block;
+  margin-right: 2.128%;
+  width: 74.468%;
+}
+.reload-popup1 .text--med, .reload-popup2 .text--med {
+  font-size: 1rem;
+  line-height: 1;
+}
+.reload-popup1 .padding-toleft, .reload-popup2 .padding-toleft {
+  padding-left: 20px;
+}
+.reload-popup1 .padding-trailer, .reload-popup2 .padding-trailer {
+  padding-bottom: 20px;
+}
+.reload-popup1 .is-hidden, .reload-popup2 .is-hidden {
+  display: none !important;
+}
+.reload-popup1 .text--content small, .reload-popup1 .text--xsmall, .reload-popup2 .text--content small, .reload-popup2 .text--xsmall {
+  font-size: .688rem;
+  line-height: 1;
+}
+.reload-popup1 .is-hidden, .reload-popup2 .is-hidden {
+  height: 0;
+  opacity: 0;
+}
+.reload-popup1 .is-hidden, .reload-popup1 .is-inactive, .reload-popup1 .text-truncate, .reload-popup2 .is-hidden, .reload-popup2 .is-inactive, .reload-popup2 .text-truncate {
+  overflow: hidden;
+}
+.reload-popup1 .red-font, .reload-popup2 .red-font {
+  color: red;
+}
+.reload-popup1 .is-hidden, .reload-popup1 .optionSelector, .reload-popup2 .is-hidden, .reload-popup2 .optionSelector {
+  visibility: hidden;
+}
+@media only screen and (min-width: 37.5em) {
+  .reload-popup1 .tablet-one-whole:last-child, .reload-popup2 .tablet-one-whole:last-child {
+    margin-right: 0;
+  }
+}
+@media only screen and (min-width: 37.5em) {
+  .reload-popup1 .tablet-one-whole, .reload-popup2 .tablet-one-whole {
+    float: left;
+    display: block;
+    margin-right: 2.128%;
+    width: 100%;
+  }
+}
+.reload-popup1 .row, .reload-popup2 .row {
+  position: relative;
+  clear: both;
+}
+.reload-popup1 .padding-leader, .reload-popup2 .padding-leader {
+  padding-top: 20px;
+}
+
+.reload-popup1.is-hidden, .reload-popup2.is-hidden {
+  display: none !important;
+}
+
+.reload-popup1 .text--center ,.reload-popup2 .text--center  {
+    text-align: center;
+}
+
+.reload-popup1 .icon-reject:before, .reload-popup2 .icon-reject:before {
+  content: "\e678";
+  font-size: 20px;
+  color: #333;
+}
+.reload-popup1 .button--action:hover, .reload-popup2 .button--action:hover {
+  background: #ffbf00 !important;
+  color: #333 !important;
+}
+.reload-popup1 .button--action[disabled], .reload-popup2 .button--action[disabled] {
+  background: #f9f9f9;
+  color: #adadad;
+  box-shadow: inset 0 0 0 1px #e0e0e0;
+  border: none;
+}
+.reload-popup1 .button--action[disabled]:hover, .reload-popup2 .button--action[disabled]:hover {
+  background: #f9f9f9 !important;
+}
+.reload-popup1 .toright--small, .reload-popup2 .toright--small {
+  margin-right: 10px;
+}
+.reload-popup1 .padding-whole, .reload-popup2 .padding-whole {
+  padding: 15px 20px;
+}
+.reload-popup1 .reload-text, .reload-popup2 .reload-text {
+  font-weight: 200;
+  line-height: 20px;
+  margin-bottom: 0;
+}
+.reload-popup1 input[type="text"], .reload-popup1 p, .reload-popup2 input[type="text"], .reload-popup2 p {
+  margin-bottom: 0;
+}
+.reload-popup1 .voucher-html, .reload-popup2 .voucher-html {
+  padding: 1.25rem !important;
+}
+
+.reload-popup1 .bullet-link--reverse:before, .reload-popup1 .bullet-link:before, .reload-popup1 .button--flow:before, .reload-popup1 .button--icon:before, .reload-popup1 .button--link:before, .reload-popup1 .button--naked span:after, .reload-popup1 .error-summary__list li:before, .reload-popup1 .fill--half:after, .reload-popup1 .fontface .list--check li:before, .reload-popup1 .fontface .list--check--dark li:before, .reload-popup1 .fontface .list--check--green li:before, .reload-popup1 .fontface .list--check--grey li:before, .reload-popup1 .fontface .list--check--purple li:before, .reload-popup1 .fontface .list--check--yellow li:before, .reload-popup1 .fontface .list--default li:before, .reload-popup1 .fontface .list--footer li:before, .reload-popup1 .fontface .page__bottom .list--default li:before, .reload-popup1 .fontface .page__bottom .sg-content__docs > ul li:before, .reload-popup1 .fontface .page__bottom .sg-markdown > ul li:before, .reload-popup1 .fontface .page__bottom .text--content ul li:before, .reload-popup1 .fontface .page__footer .list--default li:before, .reload-popup1 .fontface .page__footer .sg-content__docs > ul li:before, .reload-popup1 .fontface .page__footer .sg-markdown > ul li:before, .reload-popup1 .fontface .page__footer .text--content ul li:before, .reload-popup1 .fontface .sg-content__docs > blockquote .page__bottom ul li:before, .reload-popup1 .fontface .sg-content__docs > blockquote .page__footer ul li:before, .reload-popup1 .fontface .sg-content__docs > ol .page__bottom ul li:before, .reload-popup1 .fontface .sg-content__docs > ol .page__footer ul li:before, .reload-popup1 .fontface .sg-content__docs > p .page__bottom ul li:before, .reload-popup1 .fontface .sg-content__docs > p .page__footer ul li:before, .reload-popup1 .fontface .sg-content__docs > ul .page__bottom ul li:before, .reload-popup1 .fontface .sg-content__docs > ul .page__footer ul li:before, .reload-popup1 .fontface .sg-content__docs > ul li:before, .reload-popup1 .fontface .sg-markdown > blockquote .page__bottom ul li:before, .reload-popup1 .fontface .sg-markdown > blockquote .page__footer ul li:before, .reload-popup1 .fontface .sg-markdown > ol .page__bottom ul li:before, .reload-popup1 .fontface .sg-markdown > ol .page__footer ul li:before, .reload-popup1 .fontface .sg-markdown > p .page__bottom ul li:before, .reload-popup1 .fontface .sg-markdown > p .page__footer ul li:before, .reload-popup1 .fontface .sg-markdown > ul .page__bottom ul li:before, .reload-popup1 .fontface .sg-markdown > ul .page__footer ul li:before, .reload-popup1 .fontface .sg-markdown > ul li:before, .reload-popup1 .fontface .text--content .page__bottom ul li:before, .reload-popup1 .fontface .text--content .page__footer ul li:before, .reload-popup1 .fontface .text--content ul li:before, .reload-popup1 .fontface [class*=" list--check"] li:before, .reload-popup1 .fontface [class^=list--check] li:before, .reload-popup1 .form-item .ws-range .ws-range-thumb, .reload-popup1 .form-item__row .form-comp:before, .reload-popup1 .form-search .ws-range .ws-range-thumb, .reload-popup1 .page__bottom .fontface .list--default li:before, .reload-popup1 .page__bottom .fontface .sg-content__docs > ul li:before, .reload-popup1 .page__bottom .fontface .sg-markdown > ul li:before, .reload-popup1 .page__bottom .sg-content__docs > blockquote .fontface ul li:before, .reload-popup1 .page__bottom .sg-content__docs > ol .fontface ul li:before, .reload-popup1 .page__bottom .sg-content__docs > p .fontface ul li:before, .reload-popup1 .page__bottom .sg-content__docs > ul .fontface ul li:before, .reload-popup1 .page__bottom .sg-markdown > blockquote .fontface ul li:before, .reload-popup1 .page__bottom .sg-markdown > ol .fontface ul li:before, .reload-popup1 .page__bottom .sg-markdown > p .fontface ul li:before, .reload-popup1 .page__bottom .sg-markdown > ul .fontface ul li:before, .reload-popup1 .page__bottom .text--content .fontface ul li:before, .reload-popup1 .page__footer .fontface .list--default li:before, .reload-popup1 .page__footer .fontface .sg-content__docs > ul li:before, .reload-popup1 .page__footer .fontface .sg-markdown > ul li:before, .reload-popup1 .page__footer .sg-content__docs > blockquote .fontface ul li:before, .reload-popup1 .page__footer .sg-content__docs > ol .fontface ul li:before, .reload-popup1 .page__footer .sg-content__docs > p .fontface ul li:before, .reload-popup1 .page__footer .sg-content__docs > ul .fontface ul li:before, .reload-popup1 .page__footer .sg-markdown > blockquote .fontface ul li:before, .reload-popup1 .page__footer .sg-markdown > ol .fontface ul li:before, .reload-popup1 .page__footer .sg-markdown > p .fontface ul li:before, .reload-popup1 .page__footer .sg-markdown > ul .fontface ul li:before, .reload-popup1 .page__footer .text--content .fontface ul li:before, .reload-popup1 .pager--default .svg .paging_simple_numbers span span.next:before, .reload-popup1 .pager--default .svg .paging_simple_numbers span span.previous:before, .reload-popup1 .paging_simple_numbers .svg .pager--default .next.paginate_button:before, .reload-popup1 .paging_simple_numbers .svg .pager--default .previous.paginate_button:before, .reload-popup1 .paging_simple_numbers span .svg .pager--default span.next:before, .reload-popup1 .paging_simple_numbers span .svg .pager--default span.previous:before, .reload-popup1 .sg-content__docs > blockquote .fontface ul li:before, .reload-popup1 .sg-content__docs > blockquote .page__bottom .fontface ul li:before, .reload-popup1 .sg-content__docs > blockquote .page__footer .fontface ul li:before, .reload-popup1 .sg-content__docs > ol .fontface ul li:before, .reload-popup1 .sg-content__docs > ol .page__bottom .fontface ul li:before, .reload-popup1 .sg-content__docs > ol .page__footer .fontface ul li:before, .reload-popup1 .sg-content__docs > p .fontface ul li:before, .reload-popup1 .sg-content__docs > p .page__bottom .fontface ul li:before, .reload-popup1 .sg-content__docs > p .page__footer .fontface ul li:before, .reload-popup1 .sg-content__docs > ul .fontface ul li:before, .reload-popup1 .sg-content__docs > ul .page__bottom .fontface ul li:before, .reload-popup1 .sg-content__docs > ul .page__footer .fontface ul li:before, .reload-popup1 .sg-markdown > blockquote .fontface ul li:before, .reload-popup1 .sg-markdown > blockquote .page__bottom .fontface ul li:before, .reload-popup1 .sg-markdown > blockquote .page__footer .fontface ul li:before, .reload-popup1 .sg-markdown > ol .fontface ul li:before, .reload-popup1 .sg-markdown > ol .page__bottom .fontface ul li:before, .reload-popup1 .sg-markdown > ol .page__footer .fontface ul li:before, .reload-popup1 .sg-markdown > p .fontface ul li:before, .reload-popup1 .sg-markdown > p .page__bottom .fontface ul li:before, .reload-popup1 .sg-markdown > p .page__footer .fontface ul li:before, .reload-popup1 .sg-markdown > ul .fontface ul li:before, .reload-popup1 .sg-markdown > ul .page__bottom .fontface ul li:before, .reload-popup1 .sg-markdown > ul .page__footer .fontface ul li:before, .reload-popup1 .status-dot--check:before, .reload-popup1 .svg .pager--default .next.pager__elipsis:before, .reload-popup1 .svg .pager--default .pager__button.next:before, .reload-popup1 .svg .pager--default .pager__button.previous:before, .reload-popup1 .svg .pager--default .paging_simple_numbers span span.next:before, .reload-popup1 .svg .pager--default .paging_simple_numbers span span.previous:before, .reload-popup1 .svg .pager--default .previous.pager__elipsis:before, .reload-popup1 .svg .paging_simple_numbers .next.pager__elipsis:before, .reload-popup1 .svg .paging_simple_numbers .next.paginate_button:before, .reload-popup1 .svg .paging_simple_numbers .pager__button.next:before, .reload-popup1 .svg .paging_simple_numbers .pager__button.previous:before, .reload-popup1 .svg .paging_simple_numbers .previous.pager__elipsis:before, .reload-popup1 .svg .paging_simple_numbers .previous.paginate_button:before, .reload-popup1 .svg .paging_simple_numbers span .pager--default span.next:before, .reload-popup1 .svg .paging_simple_numbers span .pager--default span.previous:before, .reload-popup1 .svg .paging_simple_numbers span span.next:before, .reload-popup1 .svg .paging_simple_numbers span span.previous:before, .reload-popup1 .text--content .fontface ul li:before, .reload-popup1 .text--content .page__bottom .fontface ul li:before, .reload-popup1 .text--content .page__footer .fontface ul li:before, .reload-popup1 [class*=" icon-"]:before, .reload-popup1 [class^=icon-]:before, .reload-popup2 .bullet-link--reverse:before, .reload-popup2 .bullet-link:before, .reload-popup2 .button--flow:before, .reload-popup2 .button--icon:before, .reload-popup2 .button--link:before, .reload-popup2 .button--naked span:after, .reload-popup2 .error-summary__list li:before, .reload-popup2 .fill--half:after, .reload-popup2 .fontface .list--check li:before, .reload-popup2 .fontface .list--check--dark li:before, .reload-popup2 .fontface .list--check--green li:before, .reload-popup2 .fontface .list--check--grey li:before, .reload-popup2 .fontface .list--check--purple li:before, .reload-popup2 .fontface .list--check--yellow li:before, .reload-popup2 .fontface .list--default li:before, .reload-popup2 .fontface .list--footer li:before, .reload-popup2 .fontface .page__bottom .list--default li:before, .reload-popup2 .fontface .page__bottom .sg-content__docs > ul li:before, .reload-popup2 .fontface .page__bottom .sg-markdown > ul li:before, .reload-popup2 .fontface .page__bottom .text--content ul li:before, .reload-popup2 .fontface .page__footer .list--default li:before, .reload-popup2 .fontface .page__footer .sg-content__docs > ul li:before, .reload-popup2 .fontface .page__footer .sg-markdown > ul li:before, .reload-popup2 .fontface .page__footer .text--content ul li:before, .reload-popup2 .fontface .sg-content__docs > blockquote .page__bottom ul li:before, .reload-popup2 .fontface .sg-content__docs > blockquote .page__footer ul li:before, .reload-popup2 .fontface .sg-content__docs > ol .page__bottom ul li:before, .reload-popup2 .fontface .sg-content__docs > ol .page__footer ul li:before, .reload-popup2 .fontface .sg-content__docs > p .page__bottom ul li:before, .reload-popup2 .fontface .sg-content__docs > p .page__footer ul li:before, .reload-popup2 .fontface .sg-content__docs > ul .page__bottom ul li:before, .reload-popup2 .fontface .sg-content__docs > ul .page__footer ul li:before, .reload-popup2 .fontface .sg-content__docs > ul li:before, .reload-popup2 .fontface .sg-markdown > blockquote .page__bottom ul li:before, .reload-popup2 .fontface .sg-markdown > blockquote .page__footer ul li:before, .reload-popup2 .fontface .sg-markdown > ol .page__bottom ul li:before, .reload-popup2 .fontface .sg-markdown > ol .page__footer ul li:before, .reload-popup2 .fontface .sg-markdown > p .page__bottom ul li:before, .reload-popup2 .fontface .sg-markdown > p .page__footer ul li:before, .reload-popup2 .fontface .sg-markdown > ul .page__bottom ul li:before, .reload-popup2 .fontface .sg-markdown > ul .page__footer ul li:before, .reload-popup2 .fontface .sg-markdown > ul li:before, .reload-popup2 .fontface .text--content .page__bottom ul li:before, .reload-popup2 .fontface .text--content .page__footer ul li:before, .reload-popup2 .fontface .text--content ul li:before, .reload-popup2 .fontface [class*=" list--check"] li:before, .reload-popup2 .fontface [class^=list--check] li:before, .reload-popup2 .form-item .ws-range .ws-range-thumb, .reload-popup2 .form-item__row .form-comp:before, .reload-popup2 .form-search .ws-range .ws-range-thumb, .reload-popup2 .page__bottom .fontface .list--default li:before, .reload-popup2 .page__bottom .fontface .sg-content__docs > ul li:before, .reload-popup2 .page__bottom .fontface .sg-markdown > ul li:before, .reload-popup2 .page__bottom .sg-content__docs > blockquote .fontface ul li:before, .reload-popup2 .page__bottom .sg-content__docs > ol .fontface ul li:before, .reload-popup2 .page__bottom .sg-content__docs > p .fontface ul li:before, .reload-popup2 .page__bottom .sg-content__docs > ul .fontface ul li:before, .reload-popup2 .page__bottom .sg-markdown > blockquote .fontface ul li:before, .reload-popup2 .page__bottom .sg-markdown > ol .fontface ul li:before, .reload-popup2 .page__bottom .sg-markdown > p .fontface ul li:before, .reload-popup2 .page__bottom .sg-markdown > ul .fontface ul li:before, .reload-popup2 .page__bottom .text--content .fontface ul li:before, .reload-popup2 .page__footer .fontface .list--default li:before, .reload-popup2 .page__footer .fontface .sg-content__docs > ul li:before, .reload-popup2 .page__footer .fontface .sg-markdown > ul li:before, .reload-popup2 .page__footer .sg-content__docs > blockquote .fontface ul li:before, .reload-popup2 .page__footer .sg-content__docs > ol .fontface ul li:before, .reload-popup2 .page__footer .sg-content__docs > p .fontface ul li:before, .reload-popup2 .page__footer .sg-content__docs > ul .fontface ul li:before, .reload-popup2 .page__footer .sg-markdown > blockquote .fontface ul li:before, .reload-popup2 .page__footer .sg-markdown > ol .fontface ul li:before, .reload-popup2 .page__footer .sg-markdown > p .fontface ul li:before, .reload-popup2 .page__footer .sg-markdown > ul .fontface ul li:before, .reload-popup2 .page__footer .text--content .fontface ul li:before, .reload-popup2 .pager--default .svg .paging_simple_numbers span span.next:before, .reload-popup2 .pager--default .svg .paging_simple_numbers span span.previous:before, .reload-popup2 .paging_simple_numbers .svg .pager--default .next.paginate_button:before, .reload-popup2 .paging_simple_numbers .svg .pager--default .previous.paginate_button:before, .reload-popup2 .paging_simple_numbers span .svg .pager--default span.next:before, .reload-popup2 .paging_simple_numbers span .svg .pager--default span.previous:before, .reload-popup2 .sg-content__docs > blockquote .fontface ul li:before, .reload-popup2 .sg-content__docs > blockquote .page__bottom .fontface ul li:before, .reload-popup2 .sg-content__docs > blockquote .page__footer .fontface ul li:before, .reload-popup2 .sg-content__docs > ol .fontface ul li:before, .reload-popup2 .sg-content__docs > ol .page__bottom .fontface ul li:before, .reload-popup2 .sg-content__docs > ol .page__footer .fontface ul li:before, .reload-popup2 .sg-content__docs > p .fontface ul li:before, .reload-popup2 .sg-content__docs > p .page__bottom .fontface ul li:before, .reload-popup2 .sg-content__docs > p .page__footer .fontface ul li:before, .reload-popup2 .sg-content__docs > ul .fontface ul li:before, .reload-popup2 .sg-content__docs > ul .page__bottom .fontface ul li:before, .reload-popup2 .sg-content__docs > ul .page__footer .fontface ul li:before, .reload-popup2 .sg-markdown > blockquote .fontface ul li:before, .reload-popup2 .sg-markdown > blockquote .page__bottom .fontface ul li:before, .reload-popup2 .sg-markdown > blockquote .page__footer .fontface ul li:before, .reload-popup2 .sg-markdown > ol .fontface ul li:before, .reload-popup2 .sg-markdown > ol .page__bottom .fontface ul li:before, .reload-popup2 .sg-markdown > ol .page__footer .fontface ul li:before, .reload-popup2 .sg-markdown > p .fontface ul li:before, .reload-popup2 .sg-markdown > p .page__bottom .fontface ul li:before, .reload-popup2 .sg-markdown > p .page__footer .fontface ul li:before, .reload-popup2 .sg-markdown > ul .fontface ul li:before, .reload-popup2 .sg-markdown > ul .page__bottom .fontface ul li:before, .reload-popup2 .sg-markdown > ul .page__footer .fontface ul li:before, .reload-popup2 .status-dot--check:before, .reload-popup2 .svg .pager--default .next.pager__elipsis:before, .reload-popup2 .svg .pager--default .pager__button.next:before, .reload-popup2 .svg .pager--default .pager__button.previous:before, .reload-popup2 .svg .pager--default .paging_simple_numbers span span.next:before, .reload-popup2 .svg .pager--default .paging_simple_numbers span span.previous:before, .reload-popup2 .svg .pager--default .previous.pager__elipsis:before, .reload-popup2 .svg .paging_simple_numbers .next.pager__elipsis:before, .reload-popup2 .svg .paging_simple_numbers .next.paginate_button:before, .reload-popup2 .svg .paging_simple_numbers .pager__button.next:before, .reload-popup2 .svg .paging_simple_numbers .pager__button.previous:before, .reload-popup2 .svg .paging_simple_numbers .previous.pager__elipsis:before, .reload-popup2 .svg .paging_simple_numbers .previous.paginate_button:before, .reload-popup2 .svg .paging_simple_numbers span .pager--default span.next:before, .reload-popup2 .svg .paging_simple_numbers span .pager--default span.previous:before, .reload-popup2 .svg .paging_simple_numbers span span.next:before, .reload-popup2 .svg .paging_simple_numbers span span.previous:before, .reload-popup2 .text--content .fontface ul li:before, .reload-popup2 .text--content .page__bottom .fontface ul li:before, .reload-popup2 .text--content .page__footer .fontface ul li:before, .reload-popup2 [class*=" icon-"]:before, .reload-popup2 [class^=icon-]:before {
+  font-family: framework-icons;
+  display: inline-block;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.reload-popup1 .text--xxlarge,.reload-popup2 .text--xxlarge {
+    font-size: 5.25rem; 
+}
+
+.reload-popup1 .icon-reject ,.reload-popup2 .icon-reject  {
+    width: 34px;
+    height: 28px;
+}
+
+.reload-popup1 .button.button--action {
+   width:160px;
+}
+
+
+
+
+
+
+      
+    
